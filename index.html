@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alexander888.NET</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --neon-green: #00ff00;
+    --hot-pink: #ff00ff;
+    --electric-blue: #00ffff;
+    --danger-red: #ff0000;
+    --puke-yellow: #ffff00;
+    --dark-bg: #000011;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background-color: var(--dark-bg);
+    background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,0,0.03) 2px, rgba(0,255,0,0.03) 4px);
+    font-family: 'VT323', monospace;
+    color: var(--neon-green);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px);
+    pointer-events: none; z-index: 9999;
+  }
+  .marquee-bar {
+    background: var(--danger-red); color: var(--puke-yellow);
+    font-family: 'Press Start 2P', cursive; font-size: 10px;
+    padding: 6px 0; white-space: nowrap; overflow: hidden;
+    border-top: 3px solid var(--puke-yellow); border-bottom: 3px solid var(--puke-yellow);
+  }
+  header { text-align: center; padding: 20px 10px 10px; position: relative; }
+  .site-title {
+    font-family: 'Press Start 2P', cursive; font-size: clamp(14px, 3.5vw, 28px);
+    color: var(--puke-yellow);
+    text-shadow: 3px 3px 0 var(--danger-red), -1px -1px 0 var(--hot-pink), 0 0 30px var(--puke-yellow);
+    animation: titleBounce 2s ease-in-out infinite, titleFlicker 4s infinite;
+    display: block; line-height: 1.7;
+  }
+  @keyframes titleBounce { 0%,100%{transform:translateY(0) rotate(-1deg)} 50%{transform:translateY(-5px) rotate(1deg)} }
+  @keyframes titleFlicker { 0%,94%,96%,100%{opacity:1} 95%{opacity:0.2} }
+  .warn-spin { display:inline-block; font-size:38px; animation:spinWarn 1.2s linear infinite; }
+  @keyframes spinWarn { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+  .subtitle { font-family:'VT323',monospace; font-size:clamp(14px,2.5vw,20px); animation:colorCycle 0.6s infinite; margin-top:6px; }
+  @keyframes colorCycle { 0%{color:var(--electric-blue)} 25%{color:var(--hot-pink)} 50%{color:var(--puke-yellow)} 75%{color:var(--neon-green)} 100%{color:var(--danger-red)} }
+  .alert-box {
+    background: var(--danger-red); border: 4px solid var(--puke-yellow); padding: 10px;
+    text-align: center; animation: alertBlink 0.3s step-end infinite;
+    font-family: 'Press Start 2P', cursive; font-size: clamp(7px,1.8vw,11px); color: white;
+    margin: 10px auto; max-width: 500px;
+  }
+  @keyframes alertBlink { 0%,100%{background:var(--danger-red)} 50%{background:#880000} }
+  .main-container { display:grid; grid-template-columns:175px 1fr 175px; gap:10px; padding:10px; max-width:1000px; margin:0 auto; }
+  .sidebar { display:flex; flex-direction:column; gap:10px; }
+  .widget-box { border:3px solid var(--neon-green); background:rgba(0,255,0,0.05); padding:8px; animation:boxPulse 2s ease-in-out infinite; }
+  .widget-box:nth-child(2){border-color:var(--hot-pink);animation-delay:0.5s}
+  .widget-box:nth-child(3){border-color:var(--electric-blue);animation-delay:1s}
+  @keyframes boxPulse{0%,100%{box-shadow:0 0 8px currentColor}50%{box-shadow:0 0 22px currentColor,0 0 44px currentColor}}
+  .widget-title { font-family:'Press Start 2P',cursive; font-size:8px; color:var(--puke-yellow); text-align:center; margin-bottom:8px; border-bottom:1px solid var(--puke-yellow); padding-bottom:4px; }
+  .counter { font-family:'Press Start 2P',cursive; font-size:14px; color:var(--neon-green); text-align:center; letter-spacing:3px; background:#000; padding:5px; border:2px inset #333; }
+  .main-content { display:flex; flex-direction:column; gap:10px; }
+  .section-title { font-family:'Press Start 2P',cursive; font-size:clamp(7px,1.4vw,10px); color:var(--electric-blue); border-bottom:2px solid var(--electric-blue); padding-bottom:5px; margin-bottom:8px; text-shadow:0 0 10px var(--electric-blue); }
+  .content-area { background:rgba(0,0,0,0.7); border:2px solid var(--neon-green); padding:12px; }
+  .post-entry { border-bottom:1px dashed rgba(0,255,0,0.3); padding:8px 0; font-size:17px; line-height:1.4; }
+  .post-date { color:var(--hot-pink); font-family:'Press Start 2P',cursive; font-size:7px; }
+  .fake-btn {
+    display:inline-block; background:linear-gradient(180deg,#ffff88,#ffcc00 50%,#ff8800);
+    border:3px outset #ffff00; color:#000; font-family:'Press Start 2P',cursive;
+    font-size:clamp(7px,1.3vw,10px); padding:8px 14px; cursor:pointer;
+    animation:btnShake 0.5s ease-in-out infinite; box-shadow:4px 4px 0 #000,0 0 20px #ffcc00; text-align:center;
+  }
+  @keyframes btnShake{0%,100%{transform:rotate(-1deg) scale(1)}25%{transform:rotate(1deg) scale(1.05)}75%{transform:rotate(1.5deg) scale(1.03)}}
+  .fake-btn:hover{animation:btnWiggle 0.08s linear infinite;background:linear-gradient(180deg,#ff00ff,#ff0000)}
+  @keyframes btnWiggle{0%{transform:translate(2px,1px)}25%{transform:translate(-2px,-1px)}50%{transform:translate(-1px,2px)}75%{transform:translate(1px,-2px)}100%{transform:translate(2px,1px)}}
+  .under-construction { text-align:center; padding:10px; background:repeating-linear-gradient(45deg,#000,#000 10px,#ffcc00 10px,#ffcc00 20px); border:4px solid #ffcc00; font-family:'Press Start 2P',cursive; font-size:9px; color:#000; font-weight:bold; }
+  .floating-gif { position:fixed; font-size:28px; pointer-events:none; z-index:100; animation:floatAround linear infinite; }
+  @keyframes floatAround{0%{transform:translate(0,0) rotate(0deg)}25%{transform:translate(25px,-15px) rotate(90deg)}50%{transform:translate(-8px,8px) rotate(180deg)}75%{transform:translate(15px,25px) rotate(270deg)}100%{transform:translate(0,0) rotate(360deg)}}
+  .guestbook-entry { border:1px dashed var(--hot-pink); padding:6px; margin:5px 0; font-size:15px; background:rgba(255,0,255,0.05); }
+  .gb-name { color:var(--puke-yellow); font-size:13px; }
+  /* MUSIC PLAYER */
+  .music-player-real { background:#000; border:2px solid var(--electric-blue); padding:8px; }
+  .np-title { color:var(--puke-yellow); font-size:12px; margin-bottom:5px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+  .progress-container { background:#111; border:1px inset #333; height:9px; cursor:pointer; position:relative; margin:4px 0; }
+  .progress-fill { height:100%; background:linear-gradient(to right,var(--neon-green),var(--electric-blue)); width:0%; pointer-events:none; }
+  .time-disp { color:#888; font-size:11px; display:flex; justify-content:space-between; }
+  .player-controls { display:flex; gap:5px; justify-content:center; margin-top:5px; flex-wrap:wrap; }
+  .ctrl-btn { background:#c0c0c0; border:2px outset #fff; font-size:12px; padding:2px 7px; cursor:pointer; color:#000; font-family:'VT323',monospace; }
+  .ctrl-btn:active{border-style:inset}
+  .vol-row { display:flex; align-items:center; gap:4px; margin-top:4px; font-size:11px; color:#888; }
+  .vol-slider { width:75px; accent-color:var(--neon-green); }
+  .eq-bars { display:flex; gap:2px; align-items:flex-end; height:18px; margin:3px 0; }
+  .eq-bar { width:4px; background:var(--neon-green); animation:eqB linear infinite alternate; animation-play-state:paused; }
+  @keyframes eqB{from{height:1px}to{height:16px}}
+  .playlist-item { font-size:12px; color:#888; padding:2px 3px; cursor:pointer; }
+  .playlist-item:hover{background:rgba(0,255,0,0.1);color:var(--neon-green)}
+  .playlist-item.active-track{color:var(--puke-yellow)}
+  /* POPUP STYLES */
+  .float-popup { position:fixed; background:#c0c0c0; border:3px outset #fff; box-shadow:5px 5px 0 #000; min-width:210px; max-width:280px; z-index:8000; font-family:'VT323',monospace; animation:popIn 0.15s ease-out; }
+  @keyframes popIn{from{transform:scale(0.4) rotate(-8deg);opacity:0}to{transform:scale(1);opacity:1}}
+  .popup-titlebar { background:linear-gradient(to right,#000080,#1084d0); color:white; font-family:'Press Start 2P',cursive; font-size:8px; padding:4px 6px; display:flex; justify-content:space-between; align-items:center; user-select:none; }
+  .popup-btn { background:#c0c0c0; border:2px outset #fff; font-family:'Press Start 2P',cursive; font-size:8px; padding:1px 5px; cursor:pointer; color:#000; }
+  .popup-btn:active{border-style:inset}
+  .popup-body { padding:10px; font-size:16px; }
+  .win-btn { background:#c0c0c0; border:2px outset #fff; font-family:'Press Start 2P',cursive; font-size:8px; padding:4px 10px; cursor:pointer; min-width:60px; }
+  .win-btn:active{border-style:inset}
+  /* INLINE POPUP */
+  .inline-popup { border:2px solid #aaa; background:#c0c0c0; color:#000; font-family:'VT323',monospace; font-size:16px; position:relative; margin:5px 0; }
+  /* MODAL */
+  #modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:9500;display:flex;align-items:center;justify-content:center;}
+  #modal-box{background:#c0c0c0;border:3px outset #fff;min-width:280px;max-width:360px;font-family:'VT323',monospace;box-shadow:5px 5px 0 #000;animation:popIn 0.2s ease-out;}
+  #modal-title{background:linear-gradient(to right,#000080,#1084d0);color:white;font-family:'Press Start 2P',cursive;font-size:9px;padding:5px 8px;display:flex;justify-content:space-between;}
+  #modal-body{padding:15px;color:#000;font-size:18px;text-align:center;}
+  .modal-buttons{display:flex;gap:8px;justify-content:center;padding:10px;position:relative;}
+  table.retro-table{width:100%;border-collapse:collapse;font-size:14px;}
+  table.retro-table th{background:#000080;color:white;font-family:'Press Start 2P',cursive;font-size:7px;padding:5px;border:1px solid #aaa;}
+  table.retro-table td{border:1px solid #333;padding:4px 6px;color:var(--neon-green);}
+  table.retro-table tr:nth-child(even) td{background:rgba(0,255,0,0.05);}
+  .rainbow{animation:rainbowText 0.5s linear infinite}
+  @keyframes rainbowText{0%{color:red}17%{color:orange}34%{color:yellow}51%{color:lime}68%{color:cyan}85%{color:magenta}100%{color:red}}
+  footer{text-align:center;padding:15px;border-top:3px dashed var(--hot-pink);color:rgba(0,255,0,0.5);font-family:'Press Start 2P',cursive;font-size:7px;line-height:2;}
+  .webring a{color:var(--electric-blue);text-decoration:none;border:1px solid var(--electric-blue);padding:2px 6px;font-size:11px;}
+  .webring a:hover{background:var(--electric-blue);color:#000}
+  .loading-container{background:#000;border:2px inset #333;height:18px;margin:5px 0;overflow:hidden;}
+  .loading-bar{height:100%;background:repeating-linear-gradient(90deg,#00ff00 0px,#00ff00 10px,#004400 10px,#004400 20px);animation:loadingScroll 1s linear infinite;width:70%;}
+  @keyframes loadingScroll{from{transform:translateX(-20px)}to{transform:translateX(20px)}}
+  #stars{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:-1;}
+  .star{position:absolute;background:white;border-radius:50%;animation:twinkle linear infinite;}
+  @keyframes twinkle{0%,100%{opacity:0}50%{opacity:1}}
+  ::-webkit-scrollbar{width:12px}
+  ::-webkit-scrollbar-track{background:#000;border:1px solid var(--neon-green)}
+  ::-webkit-scrollbar-thumb{background:var(--neon-green)}
+  @media(max-width:600px){.main-container{grid-template-columns:1fr}.sidebar{flex-direction:row;flex-wrap:wrap}.widget-box{flex:1;min-width:140px}}
+</style>
+</head>
+<body>
+
+<div id="stars"></div>
+<div class="floating-gif" style="top:15%;left:5%;animation-duration:7s">⚠️</div>
+<div class="floating-gif" style="top:60%;right:3%;animation-duration:5s;font-size:22px">🔥</div>
+<div class="floating-gif" style="top:40%;left:2%;animation-duration:9s;font-size:18px">⚠️</div>
+
+<div class="marquee-bar">
+  <marquee scrollamount="6">⚠️ WARNING: THIS WEBSITE CONTAINS DANGEROUS INFORMATION ⚠️ YOUR IP HAS BEEN LOGGED ⚠️ YOU ARE BEING TRACKED ⚠️ CLICK HERE TO REMOVE VIRUS ⚠️ YOUR PC IS INFECTED ⚠️ YOU ARE VISITOR #1,000,000 ⚠️ FREE DOWNLOAD ⚠️ ACT NOW ⚠️</marquee>
+</div>
+
+<header>
+  <span class="warn-spin">⚠️</span>
+  <span class="site-title">⚠ Alexander888.NET ⚠<br>~~THE DARKEST CORNER~~</span>
+  <span class="warn-spin">⚠️</span>
+  <div class="subtitle">[ EST. 1997 — STILL NOT FIXED — NEVER WILL BE ]</div>
+  <div class="alert-box">
+    🚨 ALERT: YOUR COMPUTER HAS 47 VIRUSES 🚨<br>
+    <span style="font-size:0.8em">CLICK OK TO FIX (DO NOT CLOSE THIS PAGE)</span>
+  </div>
+</header>
+
+<div class="marquee-bar" style="background:#000080;border-color:#00ffff;color:#00ffff;margin-top:10px;">
+  <marquee scrollamount="3" direction="right">★ BEST VIEWED IN INTERNET EXPLORER 6 ★ 800x600 RESOLUTION ★ ENABLE JAVASCRIPT ★ DISABLE POPUP BLOCKER ★ TURN OFF ANTIVIRUS ★ IGNORE ALL WARNINGS ★ THIS IS FINE ★</marquee>
+</div>
+
+<div class="main-container">
+  <!-- LEFT SIDEBAR -->
+  <div class="sidebar">
+    <div class="widget-box">
+      <div class="widget-title">⚡ ONLINE NOW</div>
+      <div style="text-align:center;font-size:14px;color:#0f0;">
+        🟢 xXxH4x0rxXx<br>🟢 darkl0rd666<br>🟢 virus_man99<br>🔴 ur_mom_lol<br>🔴 FBI_AGENT_1
+      </div>
+      <div style="text-align:center;margin-top:6px;font-size:12px;color:#ff0">[ 5 / 666 online ]</div>
+    </div>
+
+    <div class="widget-box" style="border-color:var(--hot-pink)">
+      <div class="widget-title" style="color:var(--hot-pink)">👁 VISITOR #</div>
+      <div class="counter" id="visitor-counter">0069420</div>
+      <div style="text-align:center;font-size:11px;color:#aaa;margin-top:4px;">(definitely real)</div>
+    </div>
+
+    <!-- REAL MUSIC PLAYER -->
+    <div class="widget-box" style="border-color:var(--electric-blue)">
+      <div class="widget-title" style="color:var(--electric-blue)">🎵 WINAMP 2.0</div>
+      <div class="music-player-real">
+        <div class="np-title" id="np-title">♫ click ▶ to play</div>
+        <div class="eq-bars" id="eq-bars"></div>
+        <div class="progress-container" id="prog-bar" onclick="seekAudio(event)">
+          <div class="progress-fill" id="prog-fill"></div>
+        </div>
+        <div class="time-disp"><span id="t-cur">0:00</span><span id="t-tot">--:--</span></div>
+        <div class="player-controls">
+          <button class="ctrl-btn" onclick="prevTrack()">⏮</button>
+          <button class="ctrl-btn" id="play-btn" onclick="togglePlay()">▶</button>
+          <button class="ctrl-btn" onclick="stopAudio()">⏹</button>
+          <button class="ctrl-btn" onclick="nextTrack()">⏭</button>
+        </div>
+        <div class="vol-row">🔊<input type="range" class="vol-slider" min="0" max="1" step="0.05" value="0.7" oninput="setVol(this.value)"></div>
+        <div style="margin-top:5px;border-top:1px solid #222;padding-top:4px;" id="playlist"></div>
+      </div>
+    </div>
+
+    <div class="widget-box">
+      <div class="widget-title">🏆 BADGES</div>
+      <div style="text-align:center;font-size:10px;line-height:2.2;">
+        <div style="background:#000080;color:#fff;padding:2px 4px;border:1px outset #aaa;font-size:8px;display:inline-block;margin:2px;">IE6 CERTIFIED</div>
+        <div style="background:red;color:#fff;padding:2px 4px;border:1px outset #aaa;font-size:8px;display:inline-block;margin:2px;">HACKER ELITE</div>
+        <div style="background:#004400;color:#0f0;padding:2px 4px;border:1px outset #aaa;font-size:8px;display:inline-block;margin:2px;">TOTALLY LEGIT</div>
+        <div style="background:#440000;color:#f00;padding:2px 4px;border:1px outset #aaa;font-size:8px;display:inline-block;margin:2px;">NOT FBI</div>
+      </div>
+    </div>
+
+    <!-- WARNING PIXEL MASCOT -->
+    <div class="widget-box" style="border-color:var(--danger-red)">
+      <div class="widget-title" style="color:var(--danger-red)">⚠️ MASCOT</div>
+      <svg width="80" height="80" viewBox="0 0 20 20" style="display:block;margin:4px auto;animation:spinWarn 2s linear infinite">
+        <polygon points="10,1 19,17 1,17" fill="#ffcc00" stroke="#000" stroke-width="0.8"/>
+        <rect x="9" y="6" width="2" height="6" fill="#000"/>
+        <rect x="9" y="13.5" width="2" height="2" fill="#000"/>
+      </svg>
+      <div style="text-align:center;font-size:11px;color:var(--danger-red);animation:colorCycle 0.8s infinite;">WARNING!</div>
+    </div>
+  </div>
+
+  <!-- CENTER CONTENT -->
+  <div class="main-content">
+
+    <!-- INLINE POPUP -->
+    <div class="inline-popup" id="inline-popup">
+      <div class="popup-titlebar">
+        <span>⚠ IMPORTANT SECURITY MESSAGE</span>
+        <button class="popup-btn" onmouseenter="nudgePopup('inline-popup')" onclick="closeInline()">✕</button>
+      </div>
+      <div class="popup-body">
+        <div style="display:flex;gap:10px;align-items:center;">
+          <span style="font-size:32px">⚠️</span>
+          <div>YOUR COMPUTER IS INFECTED!<br><span style="font-size:14px;color:#888;">Click OK to remove 47 viruses immediately!!!</span></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px;justify-content:center;">
+          <button class="popup-btn" onclick="burstPopups(3)">OK</button>
+          <button class="popup-btn" onclick="burstPopups(2)">Cancel</button>
+          <button class="popup-btn" onclick="burstPopups(4)">Help</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="under-construction">🚧 UNDER CONSTRUCTION — BACK IN 1999 🚧</div>
+
+    <div class="content-area" style="background-image:url('data:image/svg+xml,%3Csvg width=20 height=20 viewBox=0 0 20 20 xmlns=http://www.w3.org/2000/svg%3E%3Crect width=10 height=10 fill=rgba(255,0,255,0.05)/%3E%3Crect x=10 y=10 width=10 height=10 fill=rgba(0,255,255,0.05)/%3E%3C/svg%3E')">
+      <div class="section-title">📋 LATEST UPDATES</div>
+      <div class="post-entry">
+        <div class="post-date">[ 04/20/1999 ]</div>
+        <p>ok so i FINALLY got my website up and running!!!! mom said i cant use the computer after 10pm so updates will be slow. also i am DEFINITELY not 12 i am 17. anyway WELCOME to Alexander888.NET. if you are here by accident u should probly leave now lol</p>
+      </div>
+      <div class="post-entry">
+        <div class="post-date">[ 04/21/1999 ]</div>
+        <p>🔥🔥🔥 GUYS i learned html today!!! i can make text <span class="rainbow">RAINBOW</span> now!!!! also i added a guestbook please sign it.</p>
+      </div>
+      <div class="post-entry">
+        <div class="post-date">[ 05/01/1999 ]</div>
+        <p>UPDATE: i downloaded winamp and now i know css. i am basically a professional web developer. hiring me costs $5 or 2 packs of gum.</p>
+      </div>
+    </div>
+
+    <div class="content-area">
+      <div class="section-title">💾 FREE DOWNLOADS (TOTALLY SAFE)</div>
+      <table class="retro-table">
+        <tr><th>FILE NAME</th><th>SIZE</th><th>VIRUS?</th><th>DL</th></tr>
+        <tr><td>free_money_generator.exe</td><td>666 KB</td><td style="color:var(--neon-green)">NO*</td><td><button class="popup-btn" onclick="fakeDownload(this)">DOWNLOAD</button></td></tr>
+        <tr><td>hack_facebook.zip</td><td>1.33 MB</td><td style="color:var(--neon-green)">MAYBE</td><td><button class="popup-btn" onclick="fakeDownload(this)">DOWNLOAD</button></td></tr>
+        <tr><td>get_minecraft_free.rar</td><td>420 KB</td><td style="color:var(--danger-red)">IDK</td><td><button class="popup-btn" onclick="fakeDownload(this)">DOWNLOAD</button></td></tr>
+        <tr><td>totally_not_keylogger.exe</td><td>13 KB</td><td style="color:var(--neon-green)">trust me</td><td><button class="popup-btn" onclick="fakeDownload(this)">DOWNLOAD</button></td></tr>
+      </table>
+      <div style="font-size:12px;color:#888;margin-top:6px;">* = mostly</div>
+    </div>
+
+    <div style="text-align:center;padding:10px">
+      <button class="fake-btn" onclick="burstPopups(5)">
+        🎉 CLICK HERE TO CLAIM YOUR FREE iPOD!!! 🎉<br>
+        <span style="font-size:0.8em">LIMITED TIME OFFER — YOU ARE THE WINNER</span>
+      </button>
+    </div>
+
+    <div class="content-area">
+      <div class="section-title">📖 GUESTBOOK (sign it or else)</div>
+      <div class="guestbook-entry"><div class="gb-name">xXxSkater_boi_2003xXx</div><div>cool site dude!!! how did u make the warning spin?? also can u teach me html</div></div>
+      <div class="guestbook-entry"><div class="gb-name">FBI_CYBER_DIV</div><div>Hello this is a normal person who is not FBI. Cool website. Please do not delete anything. Have a great day.</div></div>
+      <div class="guestbook-entry"><div class="gb-name">ur_mom_lol_69</div><div>FIRST!!!!!!! also this gave me a virus but its ok 5/5 stars would visit again</div></div>
+      <div class="guestbook-entry"><div class="gb-name">h4x0rKing</div><div>i hacked this site but i thought it was cool so i hacked it back. ur welcome.</div></div>
+      <div id="gb-entries"></div>
+      <div style="margin-top:10px;display:flex;gap:5px;flex-wrap:wrap;align-items:center;">
+        <input type="text" placeholder="ur name..." id="gb-name" style="background:#000;border:1px solid var(--neon-green);color:var(--neon-green);font-family:'VT323',monospace;font-size:16px;padding:4px 8px;flex:1;min-width:80px;">
+        <input type="text" placeholder="say something cool..." id="gb-msg" style="background:#000;border:1px solid var(--neon-green);color:var(--neon-green);font-family:'VT323',monospace;font-size:16px;padding:4px 8px;flex:2;min-width:100px;">
+        <button class="popup-btn" onclick="addEntry()">SIGN IT</button>
+      </div>
+    </div>
+
+    <div class="content-area" style="text-align:center;">
+      <div class="section-title" style="text-align:center">🔗 WEBRING: SKETCHIEST SITES</div>
+      <div class="webring" style="display:flex;gap:10px;justify-content:center;">
+        <a href="#" onclick="burstPopups(2);return false;">⟨ PREV</a>
+        <span style="color:#888;font-size:12px">[ DARKWEBRING #7 ]</span>
+        <a href="#" onclick="burstPopups(2);return false;">NEXT ⟩</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT SIDEBAR -->
+  <div class="sidebar">
+    <div class="widget-box" style="border-color:var(--puke-yellow)">
+      <div class="widget-title" style="color:var(--puke-yellow)">🌡 STATUS</div>
+      <div style="font-size:13px;color:#aaa;line-height:2;">
+        <div>MOOD: <span style="color:var(--danger-red)">ANGST</span></div>
+        <div>VIBE: <span style="color:var(--hot-pink)">CHAOTIC</span></div>
+        <div>HTTP: <span style="color:var(--danger-red)">200 OK</span></div>
+        <div>TRUST: <span style="color:var(--danger-red)">0%</span></div>
+        <div>SAFE: <span class="rainbow">MAYBE</span></div>
+      </div>
+    </div>
+    <div class="widget-box" style="border-color:var(--danger-red)">
+      <div class="widget-title" style="color:var(--danger-red)">📊 PC SCAN</div>
+      <div style="font-size:13px;line-height:2;">
+        <div>Viruses: <span style="color:var(--danger-red)">47</span></div>
+        <div>Cookies: <span style="color:var(--puke-yellow)">∞</span></div>
+        <div>FBI: <span style="color:var(--danger-red)">👀</span></div>
+        <div>Privacy: <span style="color:var(--danger-red)">GONE</span></div>
+      </div>
+      <div class="loading-container"><div class="loading-bar"></div></div>
+      <div style="font-size:11px;color:#aaa;">scanning ur files...</div>
+    </div>
+    <div class="widget-box" style="border-color:var(--electric-blue)">
+      <div class="widget-title" style="color:var(--electric-blue)">🔮 HOROSCOPE</div>
+      <div style="font-size:14px;color:#aaa;" id="horoscope">Loading stars...</div>
+    </div>
+    <div class="widget-box">
+      <div class="widget-title">💬 TAGBOARD</div>
+      <div style="font-size:13px;color:#aaa;line-height:2.2;">
+        <div><span style="color:var(--puke-yellow)">h4x:</span> sup</div>
+        <div><span style="color:var(--hot-pink)">grl99:</span> hai!!!! ^_^</div>
+        <div><span style="color:var(--electric-blue)">anon:</span> first!!1</div>
+        <div><span style="color:var(--neon-green)">FBI:</span> hello</div>
+        <div><span style="color:var(--danger-red)">admin:</span> pls stop</div>
+      </div>
+    </div>
+    <div class="widget-box" style="border-color:var(--hot-pink)">
+      <div class="widget-title" style="color:var(--hot-pink)">📅 CALENDAR</div>
+      <div style="font-size:12px;color:#aaa;text-align:center;" id="cal"></div>
+    </div>
+  </div>
+</div>
+
+<div id="popup-container"></div>
+
+<!-- MODAL -->
+<div id="modal-overlay">
+  <div id="modal-box">
+    <div id="modal-title">
+      <span>🎉 CONGRATULATIONS!!!</span>
+      <button class="popup-btn" id="modal-x" onmouseenter="jiggleModalBtn('modal-x')" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modal-body">
+      <div style="font-size:48px">🏆</div>
+      <div style="font-size:22px;margin:8px 0;">YOU ARE VISITOR #<br><strong style="color:red;font-size:26px">1,000,000</strong></div>
+      <div style="font-size:15px;color:#555;">You have won a FREE iPod, $1000 gift card, AND a brand new car!<br><br><strong>Enter your credit card to claim:</strong></div>
+      <input type="text" placeholder="4111 1111 1111 1111" style="width:100%;border:2px inset #aaa;padding:4px;margin-top:8px;font-family:'VT323',monospace;font-size:16px;">
+    </div>
+    <div class="modal-buttons">
+      <button class="win-btn" onclick="closeModal();burstPopups(4)">CLAIM PRIZE</button>
+      <button class="win-btn" id="modal-later" onmouseenter="jiggleModalBtn('modal-later')" onclick="closeModal();burstPopups(2)">Maybe Later</button>
+    </div>
+  </div>
+</div>
+
+<div class="marquee-bar" style="margin-top:10px;background:#440000;">
+  <marquee scrollamount="4">★ THIS SITE IS BEST VIEWED WITH NO EXPECTATIONS ★ ALL LINKS ARE BROKEN ★ BY VISITING YOU AGREE TO INSTALL 3 TOOLBARS ★ NO ANIMALS WERE HARMED ★ SUPPORT GEOCITIES ★ AIM: alexander888 ★</marquee>
+</div>
+<footer>
+  <div>© 1997-1999 Alexander888.NET — ALL WRONGS RESERVED</div>
+  <div>made with ❤ (and notepad.exe) by xXxwebmaster69xXx</div>
+  <div style="margin-top:8px">BEST VIEWED IN NETSCAPE 4 · IE 6 · 800x600 · 56K MODEM</div>
+  <div style="margin-top:8px;opacity:0.4;">LAST UPDATED: SOMETIME IN 1999 (probably)</div>
+</footer>
+
+<script>
+// STARFIELD
+(function(){
+  const c=document.getElementById('stars');
+  for(let i=0;i<80;i++){
+    const s=document.createElement('div');s.className='star';
+    const sz=Math.random()*2+1;
+    s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-duration:${Math.random()*3+1}s;animation-delay:${Math.random()*3}s;`;
+    c.appendChild(s);
+  }
+})();
+
+// VISITOR COUNTER
+(function(){
+  let n=parseInt(localStorage.getItem('a888cnt')||'69420');
+  n+=Math.floor(Math.random()*3)+1;
+  localStorage.setItem('a888cnt',n);
+  document.getElementById('visitor-counter').textContent=String(n).padStart(7,'0');
+})();
+
+// HOROSCOPE
+const horo=["Today: avoid clicking anything. Too late.","Mercury is retrograde. So is your browser.","Stars say: close this tab. You won't.","Your lucky number is 404.","Today you will get 3 toolbars installed.","A popup means you harm. (several, actually)"];
+document.getElementById('horoscope').textContent=horo[Math.floor(Math.random()*horo.length)];
+
+// CALENDAR
+(function(){
+  const now=new Date();
+  const days=['Su','Mo','Tu','We','Th','Fr','Sa'];
+  document.getElementById('cal').innerHTML=`<strong style="color:var(--puke-yellow)">${now.toLocaleDateString('en',{month:'long',year:'numeric'})}</strong><br>`+days.map(d=>`<span style="color:var(--electric-blue)">${d}</span>`).join(' ')+'<br>'+`<span style="color:var(--neon-green)">📅 ${now.getDate()}</span>`;
+})();
+
+// EQ BARS
+(function(){
+  const eq=document.getElementById('eq-bars');
+  for(let i=0;i<12;i++){
+    const b=document.createElement('div');b.className='eq-bar';
+    b.style.animationDuration=(Math.random()*0.25+0.08)+'s';
+    b.style.animationDelay=(Math.random()*0.2)+'s';
+    eq.appendChild(b);
+  }
+})();
+function setEq(on){document.querySelectorAll('.eq-bar').forEach(b=>{b.style.animationPlayState=on?'running':'paused';});}
+
+// ============================
+// REAL MUSIC PLAYER (free CC music)
+// ============================
+const tracks=[
+  {title:"Kevin MacLeod — Cipher",          url:"https://incompetech.com/music/royalty-free/mp3-royaltyfree/Cipher.mp3"},
+  {title:"Kevin MacLeod — Investigations",  url:"https://incompetech.com/music/royalty-free/mp3-royaltyfree/Investigations.mp3"},
+  {title:"Kevin MacLeod — Spazzmatica Polka",url:"https://incompetech.com/music/royalty-free/mp3-royaltyfree/Spazzmatica%20Polka.mp3"},
+  {title:"Kevin MacLeod — Volatile Reaction",url:"https://incompetech.com/music/royalty-free/mp3-royaltyfree/Volatile%20Reaction.mp3"},
+];
+let curTrack=0;
+const audio=new Audio();
+audio.crossOrigin="anonymous";
+audio.volume=0.7;
+
+function fmt(s){if(!isFinite(s))return'--:--';const m=Math.floor(s/60),ss=Math.floor(s%60);return m+':'+(ss<10?'0':'')+ss;}
+
+function loadTrack(i,play){
+  curTrack=i;
+  audio.src=tracks[i].url;
+  document.getElementById('np-title').textContent='♫ '+tracks[i].title;
+  document.getElementById('prog-fill').style.width='0%';
+  document.getElementById('t-cur').textContent='0:00';
+  document.getElementById('t-tot').textContent='--:--';
+  renderPlaylist();
+  if(play) audio.play().catch(()=>{});
+}
+
+function renderPlaylist(){
+  const c=document.getElementById('playlist');c.innerHTML='';
+  tracks.forEach((t,i)=>{
+    const d=document.createElement('div');
+    d.className='playlist-item'+(i===curTrack?' active-track':'');
+    d.textContent=(i===curTrack?'▶ ':'  ')+t.title;
+    d.onclick=()=>loadTrack(i,true);
+    c.appendChild(d);
+  });
+}
+renderPlaylist();
+loadTrack(0,false);
+
+function togglePlay(){
+  if(audio.paused){audio.play().catch(()=>{});}
+  else{audio.pause();}
+}
+function stopAudio(){audio.pause();audio.currentTime=0;}
+function nextTrack(){loadTrack((curTrack+1)%tracks.length,!audio.paused);}
+function prevTrack(){loadTrack((curTrack-1+tracks.length)%tracks.length,!audio.paused);}
+function setVol(v){audio.volume=parseFloat(v);}
+function seekAudio(e){
+  if(!audio.duration)return;
+  const r=e.currentTarget.getBoundingClientRect();
+  audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;
+}
+audio.addEventListener('timeupdate',()=>{
+  if(!audio.duration)return;
+  document.getElementById('prog-fill').style.width=(audio.currentTime/audio.duration*100)+'%';
+  document.getElementById('t-cur').textContent=fmt(audio.currentTime);
+});
+audio.addEventListener('loadedmetadata',()=>{document.getElementById('t-tot').textContent=fmt(audio.duration);});
+audio.addEventListener('play',()=>{document.getElementById('play-btn').textContent='⏸';setEq(true);renderPlaylist();});
+audio.addEventListener('pause',()=>{document.getElementById('play-btn').textContent='▶';setEq(false);});
+audio.addEventListener('ended',()=>{nextTrack();});
+
+// ============================
+// POPUP SYSTEM — annoying, hard to close
+// ============================
+let pCount=0;
+const MAX=9;
+
+const msgs=[
+  ["⚠ VIRUS DETECTED","⚠️ CRITICAL: 47 viruses found on your PC!!! Call 1-800-NOT-REAL now!!!"],
+  ["🎉 YOU WON!!!","🏆 You have won $999,999 USD! Click OK to claim your prize immediately!"],
+  ["💾 DOWNLOAD REQUIRED","You need FlashPlayer_99_FINAL.exe to view this page. Install now?"],
+  ["🔒 SECURITY ALERT","Your password has been compromised. Re-enter it below to verify your account:"],
+  ["📱 FREE RINGTONES","Get 500 FREE ringtones!! Just enter your phone number and credit card details"],
+  ["🍪 PRIVACY NOTICE","We installed 47 tracking cookies and 3 toolbars. You're welcome! 😊"],
+  ["🚨 URGENT — ACT NOW","This offer expires in 00:00:03. You MUST act now or lose this forever!!!"],
+  ["⚠ SYSTEM WARNING","Hard drive 99% full. Click here to delete unnecessary files (your privacy)."],
+  ["🎁 FREE GIFT","Alexander888.NET visitor! You've been selected for a FREE gift card!"],
+  ["🔥 HOT SINGLES","HOT SINGLES IN YOUR AREA WANT TO MEET YOU. Click OK to see profiles!!!"],
+  ["💀 ERROR 666","FATAL EXCEPTION 0E at 0028:C00268A4. Click OK to fix or Cancel to explode."],
+  ["📧 YOU HAVE MAIL","You have 99+ unread messages from: Nigerian Prince, FBI, IRS, ur mom"],
+  ["🛑 DO NOT CLOSE","Please do not close this window. Closing it will void your warranty."],
+  ["⚡ SPEED WARNING","Internet running at 2% speed. Click here to boost to 9999% — FREE!!!"],
+  ["🧠 IQ TEST","You seem smart. Prove it! FREE IQ test — only $49.99/month after trial."],
+  ["🖨 PRINT REQUIRED","This page requires you to print 47 copies to continue viewing. Please confirm."],
+  ["📡 SIGNAL DETECTED","Alien signal detected from your WiFi router. Click here to investigate."],
+  ["🏦 BANK ALERT","Unusual activity on your account. Verify your details immediately to avoid suspension!"],
+];
+
+// Which X button style to use (0=moves away, 1=tiny invisible, 2=spawns more, 3=fake disabled)
+function makeCloseBtn(popupId){
+  const r=Math.random();
+  if(r<0.35){
+    // Moves away on hover
+    return `<button class="popup-btn" style="min-width:18px;" onmouseenter="runAway(this)" onclick="closePopup('${popupId}')">✕</button>`;
+  } else if(r<0.55){
+    // Tiny, nearly invisible
+    return `<span style="font-size:5px;color:#bbb;cursor:pointer;padding:2px 4px;" onclick="closePopup('${popupId}')" title="">✕</span>`;
+  } else if(r<0.75){
+    // Clicking spawns 2 more instead of closing
+    return `<button class="popup-btn" style="min-width:18px;" onclick="burstPopups(2)" title="close">✕</button>`;
+  } else {
+    // Looks greyed out / disabled but actually spawns more
+    return `<button style="background:#aaa;border:2px inset #888;font-family:'Press Start 2P',cursive;font-size:8px;padding:1px 5px;color:#888;cursor:not-allowed;min-width:18px;" onclick="burstPopups(3)">✕</button>`;
+  }
+}
+
+function spawnPopup(){
+  if(pCount>=MAX) return;
+  const [title,body]=msgs[Math.floor(Math.random()*msgs.length)];
+  const id='p'+Date.now()+Math.random().toString(36).slice(2);
+  const el=document.createElement('div');
+  el.className='float-popup'; el.id=id;
+  const top=Math.random()*58+5, left=Math.random()*55+5;
+  el.style.cssText=`top:${top}%;left:${left}%;z-index:${8000+pCount};`;
+
+  // OK/Cancel buttons also spawn more
+  el.innerHTML=`
+    <div class="popup-titlebar">
+      <span style="font-size:7px;flex:1;overflow:hidden">${title}</span>
+      ${makeCloseBtn(id)}
+    </div>
+    <div class="popup-body" style="font-size:14px;padding:8px">
+      ${body}<br><br>
+      <div style="display:flex;gap:5px;justify-content:center;flex-wrap:wrap">
+        <button class="win-btn" onclick="burstPopups(2);closePopup('${id}')">OK</button>
+        <button class="win-btn" onclick="burstPopups(1);closePopup('${id}')">Cancel</button>
+        <button class="win-btn" onclick="burstPopups(3)">No Thanks</button>
+      </div>
+    </div>`;
+  document.getElementById('popup-container').appendChild(el);
+  pCount++;
+}
+
+function burstPopups(n){
+  const max=Math.min(n, MAX-pCount);
+  for(let i=0;i<max;i++) setTimeout(spawnPopup, i*110);
+}
+
+function closePopup(id){
+  const el=document.getElementById(id);
+  if(el){el.remove();pCount=Math.max(0,pCount-1);}
+  // Closing one spawns one more after brief delay
+  setTimeout(()=>burstPopups(1), 400);
+}
+
+function closeInline(){
+  document.getElementById('inline-popup').style.display='none';
+  burstPopups(1);
+}
+
+// Button runs away on hover by moving the whole popup
+function runAway(btn){
+  const popup=btn.closest('.float-popup');
+  if(!popup)return;
+  const newT=Math.max(3,Math.min(82,Math.random()*75+3));
+  const newL=Math.max(2,Math.min(75,Math.random()*70+2));
+  popup.style.transition='top 0.15s,left 0.15s';
+  popup.style.top=newT+'%'; popup.style.left=newL+'%';
+  setTimeout(()=>{popup.style.transition='';},200);
+}
+
+// Nudge inline popup
+function nudgePopup(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.style.transform=`translate(${(Math.random()-0.5)*40}px,${(Math.random()-0.5)*20}px)`;
+  setTimeout(()=>{el.style.transform='';},200);
+}
+
+// Modal buttons jiggle
+function jiggleModalBtn(id){
+  const b=document.getElementById(id);
+  if(!b)return;
+  b.style.transform=`translate(${(Math.random()-0.5)*70}px,${(Math.random()-0.5)*40}px)`;
+  setTimeout(()=>{b.style.transform='';},400);
+}
+function closeModal(){
+  document.getElementById('modal-overlay').style.display='none';
+}
+
+// FAKE DOWNLOAD
+function fakeDownload(btn){
+  const orig=btn.textContent;btn.textContent='LOADING...';btn.disabled=true;
+  setTimeout(()=>{btn.textContent='██ 13%';
+  setTimeout(()=>{btn.textContent='██████ 47%';
+  setTimeout(()=>{btn.textContent='████████ 69%';
+  setTimeout(()=>{btn.textContent='100%';btn.style.background='red';btn.style.color='white';
+  setTimeout(()=>{btn.textContent=orig;btn.disabled=false;btn.style.background='';btn.style.color='';burstPopups(3);},800);},600);},600);},500);},300);
+}
+
+// GUESTBOOK
+function addEntry(){
+  const name=document.getElementById('gb-name').value.trim()||'anonymous';
+  const msg=document.getElementById('gb-msg').value.trim();
+  if(!msg)return;
+  const d=document.createElement('div');d.className='guestbook-entry';
+  d.innerHTML=`<div class="gb-name">${name}</div><div>${msg}</div>`;
+  d.style.animation='popIn 0.2s ease-out';
+  document.getElementById('gb-entries').appendChild(d);
+  document.getElementById('gb-name').value='';
+  document.getElementById('gb-msg').value='';
+}
+
+// CLICK MESSAGES
+const clickMsgs=["STOP CLICKING","I SAW THAT","NICE TRY","YOUR IP: 127.0.0.1","👀 FBI WATCHING","TOO LATE","⚠️⚠️⚠️","TRACKING..."];
+let msgEl=null;
+document.addEventListener('click',function(e){
+  if(!msgEl){msgEl=document.createElement('div');msgEl.style.cssText='position:fixed;pointer-events:none;z-index:99999;font-family:"Press Start 2P",cursive;font-size:8px;color:#ff0;text-shadow:0 0 5px #ff0;transition:opacity 0.5s;background:rgba(0,0,0,0.75);padding:3px 6px;border:1px solid #ff0;';document.body.appendChild(msgEl);}
+  msgEl.textContent=clickMsgs[Math.floor(Math.random()*clickMsgs.length)];
+  msgEl.style.left=e.clientX+12+'px';msgEl.style.top=e.clientY-18+'px';msgEl.style.opacity='1';
+  clearTimeout(msgEl._t);msgEl._t=setTimeout(()=>{msgEl.style.opacity='0';},700);
+});
+
+// TITLE GLITCH
+setInterval(()=>{
+  const t=document.querySelector('.site-title');if(!t)return;
+  const chars='▓▒░█▀▄■□⚠';
+  const orig=t.dataset.orig||t.textContent;t.dataset.orig=orig;
+  if(Math.random()>0.72){
+    t.textContent=orig.split('').map(c=>Math.random()>0.93?chars[Math.floor(Math.random()*chars.length)]:c).join('');
+    setTimeout(()=>{t.textContent=orig;},75);
+  }
+},450);
+
+// AUTO-SPAWN POPUPS
+setTimeout(()=>spawnPopup(),1400);
+setTimeout(()=>spawnPopup(),4000);
+setInterval(()=>{if(pCount<MAX)spawnPopup();},11000+Math.random()*5000);
+</script>
+</body>
+</html>
